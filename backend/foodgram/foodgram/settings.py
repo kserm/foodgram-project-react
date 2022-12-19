@@ -8,7 +8,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = '$dxcq(+4a+x!wzck59c(tayxo*u-t88!6ad#sn48c!x@2nvd0w'
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
+    'colorfield',
     'rest_framework.authtoken',
     'djoser',
     'django_filters',

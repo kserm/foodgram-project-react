@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import datetime
 
 from django.db.models import Sum
 from django.http import HttpResponse
@@ -16,6 +16,7 @@ from api.serializers import (
     RecipeCreateSerializer, RecipeSerializer,
     ShoppingListSerializer, TagSerializer
 )
+from api.utils import make_shopping_list
 from recipes.models import (FavoriteRecipe, Ingredient, IngredientList, Recipe,
                             ShoppingList, Tag)
 
@@ -55,34 +56,18 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def add_del_to_favorite(self, request, pk):
         user = request.user
         recipe = get_object_or_404(Recipe, id=pk)
-        if request.method == 'POST':
-            try:
-                fav_recipe = FavoriteRecipe.objects.create(
-                        author=user,
-                        recipe=recipe
-                )
-                serializer = ViewRecipeSerializer(recipe)
-                return Response(
-                    serializer.data,
-                    status=status.HTTP_201_CREATED
-                )
-            except Exception as e:
-                return Response(
-                        data=f'{e}',
-                        status=status.HTTP_400_BAD_REQUEST
-                )
-        try:
-            fav_recipe = FavoriteRecipe.objects.get(
+        fav_recipe, is_fav = FavoriteRecipe.objects.get_or_create(
                 author=user,
                 recipe=recipe
-            )
+        )
+        if is_fav:
             fav_recipe.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        except Exception:
-            return Response(
-                data='Избранный рецепт не найден',
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        serializer = ViewRecipeSerializer(recipe)
+        return Response(
+            serializer.data,
+            status=status.HTTP_201_CREATED
+        )
 
     @action(
         methods=('POST', 'DELETE'),
@@ -126,19 +111,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     'ingredient__measurement_unit'
                 ).annotate(amount=Sum('amount'))
             )
-            result = (
-                f'Foodgram - список покупок\n'
-                f'Пользователь: {user.first_name} {user.last_name}\n'
-                f'Дата: {date.today().strftime("%d.%m.%Y")}\n\n'
-            )
-            for item in items:
-                result += (
-                    f'{item["ingredient__name"]} '
-                    f'({item["ingredient__measurement_unit"]}) - '
-                    f'{item["amount"]}\n'
-                )
+            text = make_shopping_list(items, user)
             filename = f'{user}_{timestamp}_shopping_list.txt'
-            response = HttpResponse(result, content_type='text/plain')
+            response = HttpResponse(text, content_type='text/plain')
             response['Content-Disposition'] = (
                 f'attachment; filename="{filename}"')
             return response

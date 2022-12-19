@@ -1,3 +1,4 @@
+from django.db import transaction
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
@@ -44,18 +45,16 @@ class FavoriteRecipeSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         request = self.context.get('request')
-        if request:
-            user = request.user
-            if user.is_authenticated:
-                recipe = data['recipe']
-                if FavoriteRecipe.objects.filter(
-                    author=user,
-                    recipe=recipe
-                ).exists():
-                    raise serializers.ValidationError(
-                        'Рецепт уже в избранном!')
-            return data
-        return False
+        user = request.user
+        if user.is_authenticated:
+            recipe = data['recipe']
+            if FavoriteRecipe.objects.filter(
+                author=user,
+                recipe=recipe
+            ).exists():
+                raise serializers.ValidationError(
+                    'Рецепт уже в избранном!')
+        return data
 
     def to_representation(self, instance):
         request = self.context.get('request')
@@ -231,37 +230,31 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         tags = data['tags']
-        if tags:
-            tags_list = []
-            for tag in tags:
-                if tag in tags_list:
-                    raise serializers.ValidationError(
-                        'Тег уже добавлен'
-                    )
-                tags_list.append(tag)
-        else:
+        if not tags:
             raise serializers.ValidationError(
                 'Требуется добавить тег'
             )
+        tags_list = []
+        for tag in tags:
+            if tag in tags_list:
+                raise serializers.ValidationError(
+                    'Тег уже добавлен'
+                )
+            tags_list.append(tag)
         ingredients = data['ingredients']
-        if ingredients:
-            ingredients_list = []
-            for ingredient in ingredients:
-                if ingredient in ingredients_list:
-                    raise serializers.ValidationError(
-                        'Ингредиент уже добавлен'
-                    )
-                ingredient_amount = ingredient['amount']
-                if ingredient_amount >= 1:
-                    ingredients_list.append(ingredient)
-                else:
-                    raise serializers.ValidationError(
-                        'Количество ингредиента должно быть больше 1'
-                    )
-        else:
+        if not ingredients:
             raise serializers.ValidationError(
                 'Требуется добавить ингредиент'
             )
+        ingredients_list = []
+        for ingredient in ingredients:
+            if ingredient in ingredients_list:
+                raise serializers.ValidationError(
+                    'Ингредиент уже добавлен'
+                )
+            ingredient_amount = ingredient['amount']
+            if ingredient_amount >= 1:
+                ingredients_list.append(ingredient)
         cooking_time = data['cooking_time']
         if cooking_time < 1:
             raise serializers.ValidationError(
@@ -269,10 +262,11 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             )
         return data
 
+    @transaction.atomic
     def create(self, validated_data):
         author = self.context.get('request').user
-        tags = validated_data.pop('tags', None)
-        ingredients = validated_data.pop('ingredients', None)
+        tags = validated_data.pop('tags')
+        ingredients = validated_data.pop('ingredients')
         recipe = Recipe.objects.create(author=author, **validated_data)
         recipe.tags.set(tags)
         IngredientList.objects.bulk_create(
@@ -286,6 +280,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         )
         return recipe
 
+    @transaction.atomic
     def update(self, instance, validated_data):
         ingredients = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
@@ -301,24 +296,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                 ) for ingredient in ingredients
             ]
         )
-        instance.name = validated_data.get(
-            'name',
-            instance.name
-        )
-        instance.text = validated_data.get(
-            'text',
-            instance.text
-        )
-        instance.image = validated_data.get(
-            'image',
-            instance.image
-        )
-        instance.cooking_time = validated_data.get(
-            'cooking_time',
-            instance.cooking_time
-        )
-        instance.save()
-        return instance
+        return super().update(instance, validated_data)
 
     def to_representation(self, instance):
         request = self.context.get('request')
@@ -335,19 +313,16 @@ class ShoppingListSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         request = self.context.get('request')
-        if request:
-            user = request.user
-            if user.is_authenticated:
-                recipe = data['recipe']
-                if ShoppingList.objects.filter(
-                    user=user,
-                    recipe=recipe
-                ).exists():
-                    return serializers.ValidationError(
-                        'Рецепт уже добавлен'
-                    )
-                else:
-                    return False
+        user = request.user
+        if user.is_authenticated:
+            recipe = data['recipe']
+            if ShoppingList.objects.filter(
+                user=user,
+                recipe=recipe
+            ).exists():
+                return serializers.ValidationError(
+                    'Рецепт уже добавлен'
+                )
         return data
 
     def to_representation(self, instance):

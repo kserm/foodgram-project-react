@@ -1,4 +1,5 @@
 from django.core.validators import MinValueValidator
+from colorfield.fields import ColorField
 from django.db import models
 
 from users.models import User
@@ -33,8 +34,7 @@ class Tag(models.Model):
         verbose_name='Название',
         help_text='Укажите название тега'
     )
-    color = models.CharField(
-        unique=True,
+    color = ColorField(
         max_length=7,
         verbose_name='Цвет в HEX',
         help_text='Укажите HEX-код цвета тега'
