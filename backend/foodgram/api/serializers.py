@@ -108,21 +108,16 @@ class FollowListSerializer(serializers.ModelSerializer):
 
     def get_recipes(self, obj):
         request = self.context.get('request')
-        if request:
-            rec_limit = request.query_params.get('recipes_limit')
-            recipes = Recipe.objects.filter(author=obj)
-            if rec_limit:
-                return ViewRecipeSerializer(
-                    recipes[:int(rec_limit)],
-                    many=True,
-                    context={'request': request}
-                ).data
-            return ViewRecipeSerializer(
+        rec_limit = request.query_params.get('recipes_limit')
+        rec_count = self.get_recipes_count(obj)
+        recipes = Recipe.objects.filter(
+            author=obj
+        )[:int(rec_limit or rec_count)]
+        return ViewRecipeSerializer(
                 recipes,
                 many=True,
                 context={'request': request}
-            ).data
-        return False
+        ).data
 
     def get_recipes_count(self, obj):
         return Recipe.objects.filter(author=obj).count()
