@@ -18,7 +18,6 @@ services:
       - ./.env
   frontend:
     image: kserm27/foodgram_frontend:latest
-    restart: always
     volumes:
       - ../frontend/:/app/result_build/
   nginx:
