@@ -1,5 +1,13 @@
 # Дипломный проект "Foodgram" на учебном курсе Python-разрботчик от Яндекс.Практикум.
 ##### студент: Ермачков Константин
+![foodgram workflow](https://github.com/kserm/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg)
+____________________________________________
+## **Адрес проекта.**
+### [Ссылка на проект](http://51.250.22.110/)
+
+### Учетная запись администратора:
+- e-mail: admin_user1@example.com
+- password: adpass123 
 
 ____________________________________________
 ## **Описание.**
@@ -91,16 +99,32 @@ docker-compose up
 ```
 
 ## **Описание команд для запуска приложения в контейнерах.**
+Перейдите в раздел infra/ и выполните команду:
+```
+docker-compose up -d --build
+```
 
+Выполните миграции:
+```
+docker-compose exec web python manage.py migrate
+```
 
-</br>
-</br>
-</br>
-</br>
+Для создания superuser выполните команду:
+```
+docker-compose exec web python manage.py createsuperuser
+```
 
+Для сбора статики выполните команду:
+```
+docker-compose exec web python manage.py collectstatic --no-input
+```
 
 ## **Примеры запросов**
+
 Примеры запросов и варинты ответов доступны после запуска сервера по адрессу:
 
 При запуске локально:
 http://localhost/api/docs/
+
+При работе с удаленным сервером:
+http://51.250.22.110/api/docs/

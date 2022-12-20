@@ -45,10 +45,6 @@ MIDDLEWARE = [
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_URLS_REGEX = r'^/api/.*$'
 
-# CORS_ALLOWED_ORIGINS = [
-#     'http://localhost:80',
-# ]
-
 ROOT_URLCONF = 'foodgram.urls'
 
 TEMPLATES = [
@@ -68,7 +64,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'foodgram.wsgi.application'
-
 
 DATABASES = {
     'default': {
