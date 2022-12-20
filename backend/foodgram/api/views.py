@@ -57,8 +57,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         user = request.user
         recipe = get_object_or_404(Recipe, id=pk)
         fav_recipe, is_fav = FavoriteRecipe.objects.get_or_create(
-                author=user,
-                recipe=recipe
+            author=user,
+            recipe=recipe
         )
         if is_fav:
             fav_recipe.delete()

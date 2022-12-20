@@ -114,9 +114,9 @@ class FollowListSerializer(serializers.ModelSerializer):
             author=obj
         )[:int(rec_limit or rec_count)]
         return ViewRecipeSerializer(
-                recipes,
-                many=True,
-                context={'request': request}
+            recipes,
+            many=True,
+            context={'request': request}
         ).data
 
     def get_recipes_count(self, obj):
