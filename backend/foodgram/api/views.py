@@ -1,24 +1,21 @@
 from datetime import datetime
 
+from api.filters import IngredientFilter, RecipeFilter
+from api.pagination import StandartProjectPagination
+from api.permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
+from api.serializers import (IngredientSerializer, RecipeCreateSerializer,
+                             RecipeSerializer, ShoppingListSerializer,
+                             TagSerializer, ViewRecipeSerializer)
+from api.utils import make_shopping_list
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+from recipes.models import (FavoriteRecipe, Ingredient, IngredientList, Recipe,
+                            ShoppingList, Tag)
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-
-from api.filters import IngredientFilter, RecipeFilter
-from api.pagination import StandartProjectPagination
-from api.permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
-from api.serializers import (
-    ViewRecipeSerializer, IngredientSerializer,
-    RecipeCreateSerializer, RecipeSerializer,
-    ShoppingListSerializer, TagSerializer
-)
-from api.utils import make_shopping_list
-from recipes.models import (FavoriteRecipe, Ingredient, IngredientList, Recipe,
-                            ShoppingList, Tag)
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):

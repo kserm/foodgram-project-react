@@ -1,5 +1,4 @@
 from django.contrib import admin
-
 from recipes.models import (FavoriteRecipe, Ingredient, IngredientList, Recipe,
                             ShoppingList, Tag)
 
@@ -39,8 +38,7 @@ class RecipeAdmin(admin.ModelAdmin):
     empty_value_display = EMPTY_VAL
 
     def favorites_count(self, obj):
-        count = FavoriteRecipe.objects.filter(recipe=obj).count()
-        return count
+        return FavoriteRecipe.objects.filter(recipe=obj).count()
 
 
 @admin.register(FavoriteRecipe)

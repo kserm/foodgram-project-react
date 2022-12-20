@@ -14,5 +14,4 @@ def make_shopping_list(input_objects, user):
             f'({item["ingredient__measurement_unit"]}) - '
             f'{item["amount"]}\n'
         )
-    text = ''.join(result)
-    return text
+    return ''.join(result)
