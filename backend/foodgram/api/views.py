@@ -57,7 +57,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             author=user,
             recipe=recipe
         )
-        if is_fav:
+        if not is_fav:
             fav_recipe.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         serializer = ViewRecipeSerializer(recipe)
