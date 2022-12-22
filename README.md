@@ -3,7 +3,7 @@
 ![foodgram workflow](https://github.com/kserm/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg)
 ____________________________________________
 ## **Адрес проекта.**
-### [Ссылка на проект](http://51.250.22.110/)
+### [foodgram-eks.ddns.net](http://foodgram-eks.ddns.net/)
 
 ### Учетная запись администратора:
 - e-mail: admin_user1@example.com
