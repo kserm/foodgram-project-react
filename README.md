@@ -3,7 +3,7 @@
 ![foodgram workflow](https://github.com/kserm/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg)
 ____________________________________________
 ## **Адрес проекта.**
-### [foodgram-eks.ddns.net](http://foodgram-eks.ddns.net/)
+### [foodgram-eks.hopto.org](http://foodgram-eks.hopto.org/)
 
 ### Учетная запись администратора:
 - e-mail: admin_user1@example.com
@@ -127,4 +127,4 @@ sudo docker-compose exec backend python manage.py collectstatic --no-input
 http://localhost/api/docs/
 
 При работе с удаленным сервером:
-http://51.250.22.110/api/docs/
+http://foodgram-eks.hopto.org/api/docs/
