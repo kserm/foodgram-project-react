@@ -1,4 +1,4 @@
-# Дипломный проект "Foodgram" на учебном курсе Python-разрботчик от Яндекс.Практикум.
+# Дипломный проект "Foodgram" на учебном курсе Python-разработчик от Яндекс.Практикум.
 ##### студент: Ермачков Константин
 ![foodgram workflow](https://github.com/kserm/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg)
 ____________________________________________
